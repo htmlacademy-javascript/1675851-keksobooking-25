@@ -14,7 +14,23 @@ function getRandomNumber(min, max) {
   return Math.round(min + Math.random() * (max - min));
 }
 
-function getRandomFloatNumber(min, max, digits) {
+function getRandomArrayNumbers(min, max, padLength = 2, padNumber = 0) {
+  const array = [];
+
+  while (array.length < max) {
+    const item = String(getRandomNumber(min, max)).padStart(padLength, padNumber);
+
+    if (array.indexOf(item) === -1) {
+      array.push(item);
+    } else {
+      continue;
+    }
+  }
+
+  return array;
+}
+
+function getRandomFloatNumber(min, max, digits = 5) {
   if (typeof min !== 'number' || typeof max !== 'number') {
     throw new Error('min и max должны быть числами');
   }
@@ -46,6 +62,9 @@ function getRandomArrayElements(elements) {
 
 const IMAGE_NUMBER_MIN = 0;
 const IMAGE_NUMBER_MAX = 10;
+const PAD_LENGTH = 2;
+const PAD_NUMBER = 0;
+const imageNumbers = getRandomArrayNumbers(IMAGE_NUMBER_MIN, IMAGE_NUMBER_MAX, PAD_LENGTH, PAD_NUMBER);
 const LATITUDE_MIN = 35.65000;
 const LATITUDE_MAX = 35.70000;
 const LONGITUDE_MIN = 139.70000;
@@ -89,8 +108,7 @@ const PHOTOS = [
 ];
 const DATA_ARRAY_ELEMENTS = 10;
 
-function generateData() {
-  const IMAGE_NUMBER = String(getRandomNumber(IMAGE_NUMBER_MIN, IMAGE_NUMBER_MAX)).padStart(2, 0);
+function generateData(i) {
   const location = {
     lat: getRandomFloatNumber(LATITUDE_MIN, LATITUDE_MAX, DIGITS_SIZE),
     lng: getRandomFloatNumber(LONGITUDE_MIN, LONGITUDE_MAX, DIGITS_SIZE)
@@ -98,7 +116,7 @@ function generateData() {
 
   return {
     author: {
-      avatar: `img/avatars/user${IMAGE_NUMBER}.png`
+      avatar: `img/avatars/user${imageNumbers[i]}.png`
     },
     offer: {
       title: 'Просторная квартира премиум-класса в центре Токио',
@@ -120,4 +138,6 @@ function generateData() {
   };
 }
 
-const generateDataArray = Array.from({length: DATA_ARRAY_ELEMENTS}, generateData);
+const generateDataArray = new Array(DATA_ARRAY_ELEMENTS).fill('').map((item, i) => generateData(i));
+
+console.log(generateDataArray);
