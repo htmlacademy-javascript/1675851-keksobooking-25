@@ -12,7 +12,7 @@ const LONGITUDE_MAX = 139.80000;
 const DIGITS_SIZE = 5;
 const PRICE_MIN = 1000;
 const PRICE_MAX = 50000;
-const ACCOMMODATION_TYPES = {
+const AccommodationType = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
@@ -62,7 +62,7 @@ function generateData(i) {
       title: 'Просторная квартира премиум-класса в центре Токио',
       address: `${location.lat}, ${location.lng}`,
       price: getRandomNumber(PRICE_MIN, PRICE_MAX),
-      type: getRandomArrayElement(Object.values(ACCOMMODATION_TYPES)),
+      type: getRandomArrayElement(Object.values(AccommodationType)),
       rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
       guests: getRandomNumber(GUESTS_MIN, GUESTS_MAX),
       checkin: getRandomArrayElement(ARRIVAL_TIMES),
