@@ -1,5 +1,40 @@
 import {getRandomNumber, getRandomArrayNumbers, getRandomFloatNumber, getRandomArrayElement, getRandomArrayElements} from './util.js';
 
+const accommodationType = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalow': 'Бунгало',
+  'hotel': 'Отель',
+};
+
+const ARRIVAL_TIMES = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+const DEPARTURE_TIMES = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+const FEATURES = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
+];
+
+const PHOTOS = [
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+];
+
 const IMAGE_NUMBER_MIN = 1;
 const IMAGE_NUMBER_MAX = 10;
 const PAD_LENGTH = 2;
@@ -12,43 +47,13 @@ const LONGITUDE_MAX = 139.80000;
 const DIGITS_SIZE = 5;
 const PRICE_MIN = 1000;
 const PRICE_MAX = 50000;
-const accommodationType = {
-  'palace': 'Дворец',
-  'flat': 'Квартира',
-  'house': 'Дом',
-  'bungalow': 'Бунгало',
-  'hotel': 'Отель',
-};
 const ROOMS_MIN = 1;
 const ROOMS_MAX = 100;
 const GUESTS_MIN = 1;
 const GUESTS_MAX = 3;
-const ARRIVAL_TIMES = [
-  '12:00',
-  '13:00',
-  '14:00'
-];
-const DEPARTURE_TIMES = [
-  '12:00',
-  '13:00',
-  '14:00'
-];
-const FEATURES = [
-  'wifi',
-  'dishwasher',
-  'parking',
-  'washer',
-  'elevator',
-  'conditioner'
-];
-const PHOTOS = [
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
-];
 const DATA_ARRAY_ELEMENTS = 1;
 
-function generateData(i) {
+const generateData = (i) => {
   const location = {
     lat: getRandomFloatNumber(LATITUDE_MIN, LATITUDE_MAX, DIGITS_SIZE),
     lng: getRandomFloatNumber(LONGITUDE_MIN, LONGITUDE_MAX, DIGITS_SIZE)
@@ -76,7 +81,7 @@ function generateData(i) {
       lng: location.lng
     }
   };
-}
+};
 
 const createData = new Array(DATA_ARRAY_ELEMENTS).fill('').map((item, i) => generateData(i));
 

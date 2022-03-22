@@ -1,4 +1,4 @@
-function getRandomNumber(min, max) {
+const getRandomNumber = (min, max) => {
   if (typeof min !== 'number' || typeof max !== 'number') {
     throw new Error('min и max должны быть числами');
   }
@@ -12,9 +12,9 @@ function getRandomNumber(min, max) {
   }
 
   return Math.round(min + Math.random() * (max - min));
-}
+};
 
-function getRandomFloatNumber(min, max, digits = 5) {
+const getRandomFloatNumber = (min, max, digits = 5) => {
   if (typeof min !== 'number' || typeof max !== 'number') {
     throw new Error('min и max должны быть числами');
   }
@@ -34,9 +34,9 @@ function getRandomFloatNumber(min, max, digits = 5) {
   }
 
   return Number(randomNumber.toFixed(digits));
-}
+};
 
-function getRandomArrayNumbers(min, max, padLength = 2, padNumber = 0) {
+const getRandomArrayNumbers = (min, max, padLength = 2, padNumber = 0) => {
   const array = [];
 
   while (array.length < max) {
@@ -50,14 +50,9 @@ function getRandomArrayNumbers(min, max, padLength = 2, padNumber = 0) {
   }
 
   return array;
-}
+};
 
-function getRandomArrayElement(elements) {
-  return elements[getRandomNumber(0, elements.length - 1)];
-}
-
-function getRandomArrayElements(elements) {
-  return elements.slice(0, getRandomNumber(1, elements.length));
-}
+const getRandomArrayElement = (elements) => elements[getRandomNumber(0, elements.length - 1)];
+const getRandomArrayElements = (elements) => elements.slice(0, getRandomNumber(1, elements.length));
 
 export {getRandomNumber, getRandomArrayNumbers, getRandomFloatNumber, getRandomArrayElement, getRandomArrayElements};
