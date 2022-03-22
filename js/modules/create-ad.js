@@ -1,4 +1,4 @@
-const createAd = function(data) {
+const createAd = (data) => {
   const adTemplate = document.querySelector('#card').content.querySelector('.popup');
   const adFragment = document.createDocumentFragment();
 
@@ -13,7 +13,7 @@ const createAd = function(data) {
     adItem.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
     adItem.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
 
-    const createFeatures = function() {
+    const createFeatures = () => {
       const adFeaturesContainer = adItem.querySelector('.popup__features');
       const adFeaturesList = adFeaturesContainer.querySelectorAll('.popup__feature');
       const dataFeaturesList = offer.features;
@@ -31,7 +31,7 @@ const createAd = function(data) {
     const adDescription = adItem.querySelector('.popup__description').textContent = offer.description;
     if (!adDescription) { adDescription.remove(); }
 
-    const createPhotos = function() {
+    const createPhotos = () => {
       const adPhotosContainer = adItem.querySelector('.popup__photos');
       const adPhotosList = adPhotosContainer.children;
       const dataPhotosList = offer.photos;
