@@ -6,7 +6,7 @@ const accommodationPrice = {
   'Дворец': 10000
 };
 
-const roomsOption = {
+const roomСapacity = {
   '1 комната': ['для 1 гостя'],
   '2 комнаты': ['для 2 гостей', 'для 1 гостя'],
   '3 комнаты': ['для 3 гостей', 'для 2 гостей', 'для 1 гостя'],
@@ -17,7 +17,10 @@ const adForm = document.querySelector('.ad-form');
 const type = document.querySelector('[name="type"]');
 const price = document.querySelector('[name="price"]');
 const rooms = document.querySelector('[name="rooms"]');
-const guests = document.querySelector('[name="capacity"]');
+const capacity = document.querySelector('[name="capacity"]');
+const time = document.querySelector('.ad-form__element--time');
+const timeinOptions = document.querySelector('[name="timein"]').children;
+const timeoutOptions = document.querySelector('[name="timeout"]').children;
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -26,48 +29,87 @@ const pristine = new Pristine(adForm, {
   errorTextClass: 'help'
 });
 
-function validatePrice(value) {
+const validatePrice = (value) => {
   const typeOption = type.querySelector('option:checked');
-  const typeOptionMinPrice = accommodationPrice[typeOption.textContent];
+  const typeOptionName = typeOption.textContent;
+  const typeOptionMinPrice = accommodationPrice[typeOptionName];
 
   return value >= typeOptionMinPrice;
-}
+};
 
-function getPriceError() {
+const getPriceError = () => {
   const typeOption = type.querySelector('option:checked');
+  const typeOptionName = typeOption.textContent;
+  const typeOptionMinPrice = accommodationPrice[typeOptionName];
 
-  return `Минимальная цена ${accommodationPrice[typeOption.textContent]}\u00A0руб.`;
-}
+  return `Минимальная цена ${typeOptionMinPrice}\u00A0руб.`;
+};
 
 pristine.addValidator(price, validatePrice, getPriceError);
 
-function onTypeChange() {
-  const typeOption = type[this.selectedIndex];
-  const typeOptionMinPrice = accommodationPrice[typeOption.textContent];
+const onTypeChange = () => {
+  const typeOption = type.querySelector('option:checked');
+  const typeOptionName = typeOption.textContent;
+  const typeOptionMinPrice = accommodationPrice[typeOptionName];
 
   price.placeholder = typeOptionMinPrice;
-  price.setAttribute('min', typeOptionMinPrice);
   pristine.validate(price);
-}
+};
 
 type.addEventListener('change', onTypeChange);
 
-function validateRooms() {
-  const roomsOptionValue = rooms[rooms.selectedIndex].textContent;
-  const guestsValue = guests[guests.selectedIndex].textContent;
+function validateCapacity() {
+  const roomsOption = rooms.querySelector('option:checked');
+  const roomsOptionName = roomsOption.textContent;
+  const capacityOption = capacity.querySelector('option:checked');
+  const capacityOptionName = capacityOption.textContent;
 
-  return roomsOption[roomsOptionValue].includes(guestsValue);
+  this.parentNode.classList.add('ad-form__element--pristine');
+
+  const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
+
+  for (const pristineElement of pristineElements) {
+    if (pristineElement.classList.contains('has-danger')) {
+      const pristineElementError = pristineElement.querySelector('.pristine-error');
+
+      pristineElement.classList.remove('has-danger');
+      pristineElementError.style.display = 'none';
+    }
+  }
+
+  return roomСapacity[roomsOptionName].includes(capacityOptionName);
 }
 
-function getRoomsError() {
-  const roomsOptionValue = rooms[rooms.selectedIndex].textContent;
-  const availableOptions = roomsOption[roomsOptionValue].join(', ');
+const getCapacityError = () => {
+  const roomsOption = rooms.querySelector('option:checked');
+  const roomsOptionName = roomsOption.textContent;
+  const correctCapacity = roomСapacity[roomsOptionName];
+  const correctCapacityMessage = correctCapacity.map((element) => `"${element}"`).join(', ');
 
-  return `Вариант ${roomsOptionValue} доступен только для: ${availableOptions}`;
-}
+  return `Вариант "${roomsOptionName}" доступен только: ${correctCapacityMessage}`;
+};
 
-pristine.addValidator(rooms, validateRooms, getRoomsError);
-pristine.addValidator(guests, validateRooms, getRoomsError);
+pristine.addValidator(rooms, validateCapacity, getCapacityError);
+pristine.addValidator(capacity, validateCapacity, getCapacityError);
+
+const setOptionByValue = (targetValue, options) => {
+  for (const option of options) {
+    if (option.value === targetValue) {
+      option.selected = 'selected';
+    }
+  }
+};
+
+const onTimeChange = (evt) => {
+  const target = evt.target;
+
+  if (target.classList.contains('timein') || target.classList.contains('timeout')) {
+    setOptionByValue(target.value, timeinOptions);
+    setOptionByValue(target.value, timeoutOptions);
+  }
+};
+
+time.addEventListener('change', onTimeChange);
 
 adForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
