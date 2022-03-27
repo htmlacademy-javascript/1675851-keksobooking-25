@@ -3,6 +3,7 @@ const mapFormElements = document.querySelectorAll('[id^="housing-"]');
 const adForm = document.querySelector('.ad-form');
 const adFormElements = document.querySelectorAll('.ad-form__element');
 const adFormFileElements = document.querySelectorAll('input[type="file"]');
+const slider = document.querySelector('.ad-form__slider');
 
 const setInactiveMapForm = () => {
   mapForm.classList.add('map__filters--disabled');
@@ -22,6 +23,8 @@ const setInactiveAdForm = () => {
   adFormElements.forEach((adFormElement) => {
     adFormElement.setAttribute('disabled', '');
   });
+
+  slider.setAttribute('disabled', true);
 };
 
 const setActiveMapForm = () => {
@@ -42,6 +45,8 @@ const setActiveAdForm = () => {
   adFormElements.forEach((adFormElement) => {
     adFormElement.removeAttribute('disabled');
   });
+
+  slider.removeAttribute('disabled');
 };
 
 const setInactiveState = () => {

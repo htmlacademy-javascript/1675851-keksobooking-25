@@ -1,5 +1,18 @@
 import {getRandomNumber, getRandomArrayNumbers, getRandomFloatNumber, getRandomArrayElement, getRandomArrayElements} from './util.js';
 
+const TITLES = [
+  'Просторная студия в тихом районе. Идеально подходит для удаленной работы',
+  'Бюджетная квартира-студия рядом с торговым центром и метро',
+  'Простая, но просторная квартира. Очень близко Акихабаре',
+  'Роскошный номер с интерьером от итальянского дизайнера',
+  'Пентхаус Люкс с панорамным видом и изысканной мебелью',
+  'Студия в стиле лофт. Отличное место для работы',
+  'Остановитесь в Икэбукуро! Дом на 6 человек',
+  'Элегантная, яркая и современная квартира',
+  'Дом в японском классическом стиле',
+  'Семейный номер. Барбекю на крыше'
+];
+
 const accommodationType = {
   'palace': 'Дворец',
   'flat': 'Квартира',
@@ -39,7 +52,7 @@ const IMAGE_NUMBER_MIN = 1;
 const IMAGE_NUMBER_MAX = 10;
 const PAD_LENGTH = 2;
 const PAD_NUMBER = 0;
-const imageNumbers = getRandomArrayNumbers(IMAGE_NUMBER_MIN, IMAGE_NUMBER_MAX, PAD_LENGTH, PAD_NUMBER);
+const IMAGE_NUMBERS = getRandomArrayNumbers(IMAGE_NUMBER_MIN, IMAGE_NUMBER_MAX, PAD_LENGTH, PAD_NUMBER);
 const LATITUDE_MIN = 35.65000;
 const LATITUDE_MAX = 35.70000;
 const LONGITUDE_MIN = 139.70000;
@@ -51,21 +64,21 @@ const ROOMS_MIN = 1;
 const ROOMS_MAX = 100;
 const GUESTS_MIN = 1;
 const GUESTS_MAX = 3;
-const DATA_ARRAY_ELEMENTS = 1;
+const DATA_ARRAY_ELEMENTS = 10;
 
 const generateData = (i) => {
-  const location = {
-    lat: getRandomFloatNumber(LATITUDE_MIN, LATITUDE_MAX, DIGITS_SIZE),
-    lng: getRandomFloatNumber(LONGITUDE_MIN, LONGITUDE_MAX, DIGITS_SIZE)
+  const points = {
+    latitude: getRandomFloatNumber(LATITUDE_MIN, LATITUDE_MAX, DIGITS_SIZE),
+    longitude: getRandomFloatNumber(LONGITUDE_MIN, LONGITUDE_MAX, DIGITS_SIZE)
   };
 
   return {
     author: {
-      avatar: `img/avatars/user${imageNumbers[i]}.png`
+      avatar: `img/avatars/user${IMAGE_NUMBERS[i]}.png`
     },
     offer: {
-      title: 'Просторная квартира премиум-класса в центре Токио',
-      address: `${location.lat}, ${location.lng}`,
+      title: TITLES[i],
+      address: `${points.latitude}, ${points.longitude}`,
       price: getRandomNumber(PRICE_MIN, PRICE_MAX),
       type: getRandomArrayElement(Object.values(accommodationType)),
       rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
@@ -77,12 +90,12 @@ const generateData = (i) => {
       photos: getRandomArrayElements(PHOTOS)
     },
     location: {
-      lat: location.lat,
-      lng: location.lng
+      lat: points.latitude,
+      lng: points.longitude
     }
   };
 };
 
 const createData = new Array(DATA_ARRAY_ELEMENTS).fill('').map((item, i) => generateData(i));
 
-export {createData};
+export {createData, DIGITS_SIZE};
