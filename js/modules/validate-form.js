@@ -21,6 +21,40 @@ const capacity = document.querySelector('[name="capacity"]');
 const time = document.querySelector('.ad-form__element--time');
 const timeinOptions = document.querySelector('[name="timein"]').children;
 const timeoutOptions = document.querySelector('[name="timeout"]').children;
+const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
+const slider = document.querySelector('.ad-form__slider');
+const adPriceItems = document.getElementsByClassName('ad-form__element--price');
+
+noUiSlider.create(slider, {
+  range: {
+    min: 0,
+    max: 100000,
+  },
+  start: 0,
+  step: 1,
+  connect: 'lower',
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return Number(value);
+    },
+  },
+});
+
+slider.noUiSlider.on('update', () => {
+  price.value = slider.noUiSlider.get();
+
+  for (const adPriceItem of adPriceItems) {
+    if (adPriceItem.classList.contains('has-danger')) {
+      const adPriceItemError = adPriceItem.querySelector('.pristine-error');
+
+      adPriceItem.classList.remove('has-danger');
+      adPriceItemError.style.display = 'none';
+    }
+  }
+});
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -29,10 +63,15 @@ const pristine = new Pristine(adForm, {
   errorTextClass: 'help'
 });
 
+
 const validatePrice = (value) => {
   const typeOption = type.querySelector('option:checked');
   const typeOptionName = typeOption.textContent;
   const typeOptionMinPrice = accommodationPrice[typeOptionName];
+
+  slider.noUiSlider.updateOptions({
+    start: value,
+  });
 
   return value >= typeOptionMinPrice;
 };
@@ -65,8 +104,6 @@ function validateCapacity() {
   const capacityOptionName = capacityOption.textContent;
 
   this.parentNode.classList.add('ad-form__element--pristine');
-
-  const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
 
   for (const pristineElement of pristineElements) {
     if (pristineElement.classList.contains('has-danger')) {
