@@ -1,3 +1,5 @@
+import {accommodationType} from './create-data.js';
+
 const createAd = (data) => {
   const adTemplate = document.querySelector('#card').content.querySelector('.popup');
   const adItem = adTemplate.cloneNode(true);
@@ -7,7 +9,7 @@ const createAd = (data) => {
     adItem.querySelector('.popup__title').textContent = offer.title ? offer.title : '';
     adItem.querySelector('.popup__text--address').textContent = offer.address ? offer.address : '';
     adItem.querySelector('.popup__text--price').textContent = offer.price ? `${offer.price} ₽/ночь` : '';
-    adItem.querySelector('.popup__type').textContent = offer.type ? offer.type : '';
+    adItem.querySelector('.popup__type').textContent = offer.type ? accommodationType[offer.type] : '';
     adItem.querySelector('.popup__text--capacity').textContent = offer.rooms && offer.guests ? `${offer.rooms} комнаты для ${offer.guests} гостей` : '';
     adItem.querySelector('.popup__text--time').textContent = offer.checkin && offer.checkout ? `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` : '';
 
