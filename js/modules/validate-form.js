@@ -1,3 +1,7 @@
+import {isEscapeKey} from './util.js';
+import {sendData} from './server.js';
+import {mainMarker, tokyoPoints, map} from './create-map.js';
+
 const accommodationPrice = {
   'Бунгало': 0,
   'Квартира': 1000,
@@ -13,6 +17,8 @@ const roomСapacity = {
   '100 комнат': ['не для гостей']
 };
 
+const PRICE_RANGE_MIN = 0;
+const PRICE_RANGE_MAX = 100000;
 const adForm = document.querySelector('.ad-form');
 const type = document.querySelector('[name="type"]');
 const price = document.querySelector('[name="price"]');
@@ -24,11 +30,55 @@ const timeoutOptions = document.querySelector('[name="timeout"]').children;
 const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
 const slider = document.querySelector('.ad-form__slider');
 const adPriceItems = document.getElementsByClassName('ad-form__element--price');
+const submitFormButton = document.querySelector('.ad-form__submit');
+const resetFormButton = document.querySelector('.ad-form__reset');
+
+const onNoticeClick = () => {
+  closeNotice();
+};
+
+const onNoticeEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    closeNotice();
+  }
+};
+
+function closeNotice() {
+  const noticePopup = document.querySelector('.success, .error');
+
+  noticePopup.remove();
+
+  document.removeEventListener('click', onNoticeClick);
+  document.removeEventListener('keydown', onNoticeEscKeydown);
+}
+
+const showSuccessNotice = () => {
+  const successContainer = document.querySelector('#success').content.querySelector('.success');
+  const successNotice = successContainer.cloneNode(true);
+
+  document.body.append(successNotice);
+
+  document.addEventListener('click', onNoticeClick);
+  document.addEventListener('keydown', onNoticeEscKeydown);
+};
+
+const showErrorNotice = (message) => {
+  const errorContainer = document.querySelector('#error').content.querySelector('.error');
+  const errorNotice = errorContainer.cloneNode(true);
+  const errorMessage = errorContainer.querySelector('.error__message');
+
+  errorMessage.textContent = message;
+
+  document.body.append(errorNotice);
+
+  document.addEventListener('click', onNoticeClick);
+  document.addEventListener('keydown', onNoticeEscKeydown);
+};
 
 noUiSlider.create(slider, {
   range: {
-    min: 0,
-    max: 100000,
+    min: PRICE_RANGE_MIN,
+    max: PRICE_RANGE_MAX,
   },
   start: 0,
   step: 1,
@@ -148,8 +198,53 @@ const onTimeChange = (evt) => {
 
 time.addEventListener('change', onTimeChange);
 
+const blockSubmitButton = () => {
+  submitFormButton.disabled = true;
+  submitFormButton.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  submitFormButton.disabled = false;
+  submitFormButton.textContent = 'Опубликовать';
+};
+
 adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
   const isValid = pristine.validate();
 
-  if (!isValid) { evt.preventDefault(); }
+  if (isValid) {
+    blockSubmitButton();
+
+    sendData(
+      () => {
+        showSuccessNotice();
+        unblockSubmitButton();
+
+        adForm.reset();
+        map.closePopup();
+
+        slider.noUiSlider.updateOptions({
+          start: PRICE_RANGE_MIN,
+        });
+      },
+      () => {
+        showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
+        unblockSubmitButton();
+      },
+      new FormData(evt.target),
+    );
+  }
+});
+
+resetFormButton.addEventListener('click', () => {
+  slider.noUiSlider.updateOptions({
+    start: PRICE_RANGE_MIN,
+  });
+
+  price.placeholder = PRICE_RANGE_MIN;
+
+  map.closePopup();
+
+  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
 });

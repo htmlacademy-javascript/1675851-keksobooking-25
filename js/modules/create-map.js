@@ -1,6 +1,5 @@
 import {setInactiveState, setActiveState} from './set-state.js';
-import {createData, DIGITS_SIZE} from './create-data.js';
-import {createAd} from './create-ad.js';
+import {DIGITS_SIZE} from './create-data.js';
 
 setInactiveState();
 
@@ -9,10 +8,19 @@ const tokyoPoints = {
   longitude: 139.76567
 };
 
-const data = createData;
-const address = document.querySelector('[name="address"]');
+const MAP_SCALE = 13;
 
-address.value = `${tokyoPoints.latitude}, ${tokyoPoints.longitude}`;
+const MAIN_PIN_SIZE = [
+  52,
+  52
+];
+
+const PIN_SIZE = [
+  40,
+  40
+];
+
+const address = document.querySelector('[name="address"]');
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -21,7 +29,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: tokyoPoints.latitude,
     lng: tokyoPoints.longitude,
-  }, 13);
+  }, MAP_SCALE);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -32,8 +40,14 @@ L.tileLayer(
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: [52, 52],
+  iconSize: MAIN_PIN_SIZE,
   iconAnchor: [26, 52],
+});
+
+const pinIcon = L.icon({
+  iconUrl: './img/pin.svg',
+  iconSize: PIN_SIZE,
+  iconAnchor: [20, 40],
 });
 
 const mainMarker = L.marker(
@@ -55,26 +69,4 @@ mainMarker.on('move', (evt) => {
   address.value = `${addressPoints.lat.toFixed(DIGITS_SIZE)}, ${addressPoints.lng.toFixed(DIGITS_SIZE)}`;
 });
 
-const pinIcon = L.icon({
-  iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-});
-
-data.forEach((item) => {
-  const {location} = item;
-  const lat = location.lat;
-  const lng = location.lng;
-
-  const marker = L.marker(
-    {
-      lat,
-      lng
-    },
-    {
-      icon: pinIcon,
-    }
-  );
-
-  marker.addTo(map).bindPopup(createAd([item]));
-});
+export {map, pinIcon, mainMarker, tokyoPoints};

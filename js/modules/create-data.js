@@ -96,6 +96,6 @@ const generateData = (i) => {
   };
 };
 
-const createData = new Array(DATA_ARRAY_ELEMENTS).fill('').map((item, i) => generateData(i));
+const getRandomData = new Array(DATA_ARRAY_ELEMENTS).fill('').map((item, i) => generateData(i));
 
-export {createData, DIGITS_SIZE};
+export {accommodationType, DIGITS_SIZE, DATA_ARRAY_ELEMENTS, getRandomData};
