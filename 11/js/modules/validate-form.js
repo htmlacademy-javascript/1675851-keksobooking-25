@@ -1,7 +1,7 @@
 import {PRICE_RANGE_MIN, validateSlider, updateSliderValue, resetSliderValue} from './validate-slider.js';
 import {sendData} from './server.js';
 import {showSuccessNotice, showErrorNotice} from './server-notice.js';
-import {mainMarker, tokyoPoints, map} from './create-map.js';
+import {resetMap} from './create-map.js';
 
 validateSlider();
 
@@ -20,6 +20,7 @@ const roomСapacity = {
   '100 комнат': ['не для гостей']
 };
 
+const mapForm = document.querySelector('.map__filters');
 const adForm = document.querySelector('.ad-form');
 const type = document.querySelector('[name="type"]');
 const price = document.querySelector('[name="price"]');
@@ -31,6 +32,11 @@ const timeoutOptions = document.querySelector('[name="timeout"]').children;
 const time = document.querySelector('.ad-form__element--time');
 const submitFormButton = document.querySelector('.ad-form__submit');
 const resetFormButton = document.querySelector('.ad-form__reset');
+const housingType = document.querySelector('#housing-type');
+const housingPrice = document.querySelector('#housing-price');
+const housingRooms = document.querySelector('#housing-rooms');
+const housingGuests = document.querySelector('#housing-guests');
+const housingFeatures = document.querySelectorAll('[name="features"]');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -131,39 +137,70 @@ const unblockSubmitButton = () => {
   submitFormButton.textContent = 'Опубликовать';
 };
 
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+const redrawAdOnEvent = (cb) => {
+  housingType.addEventListener('change', () => {
+    cb();
+  });
 
-  const isValid = pristine.validate();
+  housingPrice.addEventListener('change', () => {
+    cb();
+  });
 
-  if (isValid) {
-    blockSubmitButton();
+  housingRooms.addEventListener('change', () => {
+    cb();
+  });
 
-    sendData(
-      () => {
-        showSuccessNotice();
-        unblockSubmitButton();
+  housingGuests.addEventListener('change', () => {
+    cb();
+  });
 
-        adForm.reset();
-        map.closePopup();
+  housingFeatures.forEach((item) => {
+    item.addEventListener('change', () => {
+      cb();
+    });
+  });
 
-        resetSliderValue();
-      },
-      () => {
-        showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
-        unblockSubmitButton();
-      },
-      new FormData(evt.target),
-    );
-  }
-});
+  resetFormButton.addEventListener('click', () => {
+    mapForm.reset();
+
+    cb();
+  });
+
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+
+    if (isValid) {
+      blockSubmitButton();
+      mapForm.reset();
+      cb();
+
+      sendData(
+        () => {
+          showSuccessNotice();
+          unblockSubmitButton();
+          resetMap();
+          adForm.reset();
+          resetSliderValue();
+        },
+
+        () => {
+          showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
+          unblockSubmitButton();
+        },
+
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 resetFormButton.addEventListener('click', () => {
+  resetMap();
+  mapForm.reset();
   resetSliderValue();
-
   price.placeholder = PRICE_RANGE_MIN;
-
-  map.closePopup();
-
-  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
 });
+
+export {redrawAdOnEvent};

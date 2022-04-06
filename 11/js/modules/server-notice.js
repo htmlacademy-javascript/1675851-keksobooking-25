@@ -10,23 +10,31 @@ const onNoticeEscKeydown = (evt) => {
   }
 };
 
-function closeNotice() {
-  const noticePopup = document.querySelector('.success, .error');
+const addNoticeAndListeners = (element) => {
+  document.body.append(element);
 
-  noticePopup.remove();
+  document.addEventListener('click', onNoticeClick);
+  document.addEventListener('keydown', onNoticeEscKeydown);
+};
+
+const removeNoticeAndListeners = (element) => {
+  element.remove();
 
   document.removeEventListener('click', onNoticeClick);
   document.removeEventListener('keydown', onNoticeEscKeydown);
+};
+
+function closeNotice() {
+  const noticePopup = document.querySelector('.success, .error');
+
+  removeNoticeAndListeners(noticePopup);
 }
 
 const showSuccessNotice = () => {
   const successContainer = document.querySelector('#success').content.querySelector('.success');
   const successNotice = successContainer.cloneNode(true);
 
-  document.body.append(successNotice);
-
-  document.addEventListener('click', onNoticeClick);
-  document.addEventListener('keydown', onNoticeEscKeydown);
+  addNoticeAndListeners(successNotice);
 };
 
 const showErrorNotice = (message) => {
@@ -36,10 +44,7 @@ const showErrorNotice = (message) => {
 
   errorMessage.textContent = message;
 
-  document.body.append(errorNotice);
-
-  document.addEventListener('click', onNoticeClick);
-  document.addEventListener('keydown', onNoticeEscKeydown);
+  addNoticeAndListeners(errorNotice);
 };
 
 export {showSuccessNotice, showErrorNotice};

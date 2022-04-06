@@ -1,5 +1,5 @@
 const NOTICE_SHOW_TIME = 3000;
-const RENDER_DELAY = 500;
+const DEFAULT_RENDER_DELAY = 500;
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
@@ -16,7 +16,7 @@ const createErrorNotice = (message) => {
   }, NOTICE_SHOW_TIME);
 };
 
-function debounce (callback, timeoutDelay = 500) {
+function debounce (callback, timeoutDelay = DEFAULT_RENDER_DELAY) {
   let timeoutId;
 
   return (...rest) => {
@@ -26,4 +26,4 @@ function debounce (callback, timeoutDelay = 500) {
   };
 }
 
-export {isEscapeKey, createErrorNotice, debounce, RENDER_DELAY};
+export {isEscapeKey, createErrorNotice, debounce};
