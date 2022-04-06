@@ -7,7 +7,7 @@ const tokyoPoints = {
   longitude: 139.76567
 };
 
-const MAP_SCALE = 13;
+const MAP_ZOOM = 13;
 
 const MAIN_PIN_SIZE = [
   52,
@@ -29,7 +29,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: tokyoPoints.latitude,
     lng: tokyoPoints.longitude,
-  }, MAP_SCALE);
+  }, MAP_ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -69,4 +69,10 @@ mainMarker.on('move', (evt) => {
   address.value = `${addressPoints.lat.toFixed(DIGITS_AMOUNT)}, ${addressPoints.lng.toFixed(DIGITS_AMOUNT)}`;
 });
 
-export {tokyoPoints, map, minorPinIcon, mainMarker};
+const resetMap = () => {
+  map.setView([tokyoPoints.latitude, tokyoPoints.longitude], MAP_ZOOM);
+  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
+  map.closePopup();
+};
+
+export {tokyoPoints, map, minorPinIcon, mainMarker, resetMap};

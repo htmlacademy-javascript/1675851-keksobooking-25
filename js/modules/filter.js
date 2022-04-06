@@ -1,89 +1,28 @@
+const FILTER_OPTION_ALL = 'any';
+const PRICE_OPTION_MIN = 'low';
+const PRICE_OPTION_MID = 'middle';
+const PRICE_OPTION_MAX = 'high';
+const PRICE_MIN = 10000;
+const PRICE_MID = 50000;
+
 const housingType = document.querySelector('#housing-type');
 const housingPrice = document.querySelector('#housing-price');
 const housingRooms = document.querySelector('#housing-rooms');
 const housingGuests = document.querySelector('#housing-guests');
-const housingFeatures = document.querySelectorAll('[name="features"]');
 
-const setHousingFilterChange = (cb) => {
-  housingType.addEventListener('change', () => {
-    cb();
-  });
+const filterByType = (item) => housingType.value === FILTER_OPTION_ALL || housingType.value === item.offer.type;
+const filterByRooms = (item) => housingRooms.value === FILTER_OPTION_ALL || Number(housingRooms.value) === item.offer.rooms;
+const filterByGuests = (item) => housingGuests.value === FILTER_OPTION_ALL || Number(housingGuests.value) === item.offer.guests;
 
-  housingPrice.addEventListener('change', () => {
-    cb();
-  });
-
-  housingRooms.addEventListener('change', () => {
-    cb();
-  });
-
-  housingGuests.addEventListener('change', () => {
-    cb();
-  });
-
-  housingFeatures.forEach((item) => {
-    item.addEventListener('change', () => {
-      cb();
-    });
-  });
-};
-
-const filterByType = (item) => {
-  const {offer} = item;
-  const typeValue = offer.type;
-
-  if (housingType.value === 'any' || housingType.value === typeValue) {
-    return true;
-  }
-
-  return false;
-};
-
-const filterByPrice = (item) => {
-  const {offer} = item;
-  const priceValue = offer.price;
-
-  if (
-    housingPrice.value === 'any' ||
-    housingPrice.value === 'low' && priceValue < 10000 ||
-    housingPrice.value === 'middle' && priceValue >= 10000 && priceValue < 50000 ||
-    housingPrice.value === 'high' && priceValue >= 50000) {
-
-    return true;
-  }
-
-  return false;
-};
-
-const filterByRooms = (item) => {
-  const {offer} = item;
-  const roomsValue = offer.rooms;
-
-  if (housingRooms.value === 'any' || Number(housingRooms.value) === roomsValue) {
-    return true;
-  }
-
-  return false;
-};
-
-const filterByGuests = (item) => {
-  const {offer} = item;
-  const guestsValue = offer.guests;
-
-  if (housingGuests.value === 'any' || Number(housingGuests.value) === guestsValue) {
-    return true;
-  }
-
-  return false;
-};
+const filterByPrice = (item) => housingPrice.value === FILTER_OPTION_ALL ||
+    housingPrice.value === PRICE_OPTION_MIN && item.offer.price < PRICE_MIN ||
+    housingPrice.value === PRICE_OPTION_MID && item.offer.price >= PRICE_MIN && item.offer.price < PRICE_MID ||
+    housingPrice.value === PRICE_OPTION_MAX && item.offer.price >= PRICE_MID;
 
 const filterByFeatures = (item) => {
-  const {offer} = item;
-  let featuresValues = offer.features;
+  let featuresValues = item.offer.features;
 
-  if (featuresValues === undefined) {
-    featuresValues = [];
-  }
+  if (!featuresValues) { featuresValues = []; }
 
   const housingFeaturesList = document.querySelectorAll('[name="features"]:checked');
   const housingFeatureValues = [];
@@ -92,12 +31,8 @@ const filterByFeatures = (item) => {
     housingFeatureValues.push(housingFeaturesItem.value);
   });
 
-  if (housingFeatureValues.length === 0 ||
-  housingFeatureValues.length && housingFeatureValues.every((e) => featuresValues.includes(e))) {
-    return true;
-  }
-
-  return false;
+  return housingFeatureValues.length === 0 ||
+  housingFeatureValues.length && housingFeatureValues.every((element) => featuresValues.includes(element));
 };
 
-export {setHousingFilterChange, filterByType, filterByPrice, filterByRooms, filterByGuests, filterByFeatures};
+export {filterByType, filterByPrice, filterByRooms, filterByGuests, filterByFeatures};
