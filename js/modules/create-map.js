@@ -1,5 +1,4 @@
 import {setInactiveState, setActiveState} from './set-state.js';
-import {DIGITS_SIZE} from './create-data.js';
 
 setInactiveState();
 
@@ -15,12 +14,13 @@ const MAIN_PIN_SIZE = [
   52
 ];
 
-const PIN_SIZE = [
+const MINOR_PIN_SIZE = [
   40,
   40
 ];
 
 const address = document.querySelector('[name="address"]');
+const DIGITS_AMOUNT = 5;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -44,9 +44,9 @@ const mainPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
-const pinIcon = L.icon({
+const minorPinIcon = L.icon({
   iconUrl: './img/pin.svg',
-  iconSize: PIN_SIZE,
+  iconSize: MINOR_PIN_SIZE,
   iconAnchor: [20, 40],
 });
 
@@ -66,7 +66,7 @@ mainMarker.addTo(map);
 mainMarker.on('move', (evt) => {
   const addressPoints = evt.target.getLatLng();
 
-  address.value = `${addressPoints.lat.toFixed(DIGITS_SIZE)}, ${addressPoints.lng.toFixed(DIGITS_SIZE)}`;
+  address.value = `${addressPoints.lat.toFixed(DIGITS_AMOUNT)}, ${addressPoints.lng.toFixed(DIGITS_AMOUNT)}`;
 });
 
-export {map, pinIcon, mainMarker, tokyoPoints};
+export {tokyoPoints, map, minorPinIcon, mainMarker};

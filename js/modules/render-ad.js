@@ -1,6 +1,12 @@
-import {accommodationType} from './create-data.js';
+const accommodationType = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalow': 'Бунгало',
+  'hotel': 'Отель',
+};
 
-const createAd = (data) => {
+const renderAd = (data) => {
   const adTemplate = document.querySelector('#card').content.querySelector('.popup');
   const adItem = adTemplate.cloneNode(true);
 
@@ -71,4 +77,4 @@ const createAd = (data) => {
   return adItem;
 };
 
-export {createAd};
+export {renderAd};
