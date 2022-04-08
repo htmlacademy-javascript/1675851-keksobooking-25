@@ -1,9 +1,11 @@
 import {PRICE_RANGE_MIN, validateSlider, updateSliderValue, resetSliderValue} from './validate-slider.js';
+import {validatePreviews, resetPreviews} from './validate-files.js';
 import {sendData} from './server.js';
 import {showSuccessNotice, showErrorNotice} from './server-notice.js';
 import {resetMap} from './create-map.js';
 
 validateSlider();
+validatePreviews();
 
 const accommodationPrice = {
   'Бунгало': 0,
@@ -183,6 +185,7 @@ const redrawAdOnEvent = (cb) => {
           resetMap();
           adForm.reset();
           resetSliderValue();
+          resetPreviews();
         },
 
         () => {
@@ -201,6 +204,7 @@ resetFormButton.addEventListener('click', () => {
   mapForm.reset();
   resetSliderValue();
   price.placeholder = PRICE_RANGE_MIN;
+  resetPreviews();
 });
 
 export {redrawAdOnEvent};

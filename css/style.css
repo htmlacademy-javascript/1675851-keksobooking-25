@@ -295,14 +295,14 @@ fieldset {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-
-  margin-right: 10px;
-  padding: 0 15px;
+  justify-content: center;
+  flex-shrink: 0;
 
   width: 70px;
   height: 70px;
-
-  text-align: center;
+  margin-right: 10px;
+  padding: 0;
+  overflow: hidden;
 
   border-radius: 5px;
   background-color: #dadada;
@@ -601,8 +601,8 @@ fieldset {
   margin-right: 10px;
   margin-bottom: 10px;
 
-  width: 70px;
-  height: 70px;
+  min-width: 70px;
+  min-height: 70px;
 
   background-color: #e4e4de;
   border-radius: 5px;
@@ -1252,4 +1252,27 @@ input[readonly] {
 
   background-color: red;
   border-radius: 4px;
+}
+
+.ad-form-header__preview img {
+  object-fit: cover;
+}
+
+.ad-form__photo {
+  display: flex;
+}
+
+.ad-form__photo.added {
+  background: transparent;
+}
+
+.ad-form__photo img {
+  display: block;
+  margin-right: 10px;
+
+  border-radius: 5px;
+}
+
+.ad-form__photo img:last-child {
+  margin-right: 0;
 }
