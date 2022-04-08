@@ -1,5 +1,4 @@
 import {setInactiveState, setActiveState} from './set-state.js';
-import {DIGITS_SIZE} from './create-data.js';
 
 setInactiveState();
 
@@ -8,19 +7,20 @@ const tokyoPoints = {
   longitude: 139.76567
 };
 
-const MAP_SCALE = 13;
+const MAP_ZOOM = 13;
 
 const MAIN_PIN_SIZE = [
   52,
   52
 ];
 
-const PIN_SIZE = [
+const MINOR_PIN_SIZE = [
   40,
   40
 ];
 
 const address = document.querySelector('[name="address"]');
+const DIGITS_AMOUNT = 5;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -29,7 +29,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: tokyoPoints.latitude,
     lng: tokyoPoints.longitude,
-  }, MAP_SCALE);
+  }, MAP_ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -44,9 +44,9 @@ const mainPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
-const pinIcon = L.icon({
+const minorPinIcon = L.icon({
   iconUrl: './img/pin.svg',
-  iconSize: PIN_SIZE,
+  iconSize: MINOR_PIN_SIZE,
   iconAnchor: [20, 40],
 });
 
@@ -66,7 +66,13 @@ mainMarker.addTo(map);
 mainMarker.on('move', (evt) => {
   const addressPoints = evt.target.getLatLng();
 
-  address.value = `${addressPoints.lat.toFixed(DIGITS_SIZE)}, ${addressPoints.lng.toFixed(DIGITS_SIZE)}`;
+  address.value = `${addressPoints.lat.toFixed(DIGITS_AMOUNT)}, ${addressPoints.lng.toFixed(DIGITS_AMOUNT)}`;
 });
 
-export {map, pinIcon, mainMarker, tokyoPoints};
+const resetMap = () => {
+  map.setView([tokyoPoints.latitude, tokyoPoints.longitude], MAP_ZOOM);
+  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
+  map.closePopup();
+};
+
+export {tokyoPoints, map, minorPinIcon, mainMarker, resetMap};

@@ -1,6 +1,11 @@
-import {isEscapeKey} from './util.js';
+import {PRICE_RANGE_MIN, validateSlider, updateSliderValue, resetSliderValue} from './validate-slider.js';
+import {validatePreviews, resetPreviews} from './validate-files.js';
 import {sendData} from './server.js';
-import {mainMarker, tokyoPoints, map} from './create-map.js';
+import {showSuccessNotice, showErrorNotice} from './server-notice.js';
+import {resetMap} from './create-map.js';
+
+validateSlider();
+validatePreviews();
 
 const accommodationPrice = {
   'Бунгало': 0,
@@ -17,94 +22,23 @@ const roomСapacity = {
   '100 комнат': ['не для гостей']
 };
 
-const PRICE_RANGE_MIN = 0;
-const PRICE_RANGE_MAX = 100000;
+const mapForm = document.querySelector('.map__filters');
 const adForm = document.querySelector('.ad-form');
 const type = document.querySelector('[name="type"]');
 const price = document.querySelector('[name="price"]');
 const rooms = document.querySelector('[name="rooms"]');
 const capacity = document.querySelector('[name="capacity"]');
-const time = document.querySelector('.ad-form__element--time');
+const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
 const timeinOptions = document.querySelector('[name="timein"]').children;
 const timeoutOptions = document.querySelector('[name="timeout"]').children;
-const pristineElements = document.getElementsByClassName('ad-form__element--pristine');
-const slider = document.querySelector('.ad-form__slider');
-const adPriceItems = document.getElementsByClassName('ad-form__element--price');
+const time = document.querySelector('.ad-form__element--time');
 const submitFormButton = document.querySelector('.ad-form__submit');
 const resetFormButton = document.querySelector('.ad-form__reset');
-
-const onNoticeClick = () => {
-  closeNotice();
-};
-
-const onNoticeEscKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    closeNotice();
-  }
-};
-
-function closeNotice() {
-  const noticePopup = document.querySelector('.success, .error');
-
-  noticePopup.remove();
-
-  document.removeEventListener('click', onNoticeClick);
-  document.removeEventListener('keydown', onNoticeEscKeydown);
-}
-
-const showSuccessNotice = () => {
-  const successContainer = document.querySelector('#success').content.querySelector('.success');
-  const successNotice = successContainer.cloneNode(true);
-
-  document.body.append(successNotice);
-
-  document.addEventListener('click', onNoticeClick);
-  document.addEventListener('keydown', onNoticeEscKeydown);
-};
-
-const showErrorNotice = (message) => {
-  const errorContainer = document.querySelector('#error').content.querySelector('.error');
-  const errorNotice = errorContainer.cloneNode(true);
-  const errorMessage = errorContainer.querySelector('.error__message');
-
-  errorMessage.textContent = message;
-
-  document.body.append(errorNotice);
-
-  document.addEventListener('click', onNoticeClick);
-  document.addEventListener('keydown', onNoticeEscKeydown);
-};
-
-noUiSlider.create(slider, {
-  range: {
-    min: PRICE_RANGE_MIN,
-    max: PRICE_RANGE_MAX,
-  },
-  start: 0,
-  step: 1,
-  connect: 'lower',
-  format: {
-    to: function (value) {
-      return value.toFixed(0);
-    },
-    from: function (value) {
-      return Number(value);
-    },
-  },
-});
-
-slider.noUiSlider.on('update', () => {
-  price.value = slider.noUiSlider.get();
-
-  for (const adPriceItem of adPriceItems) {
-    if (adPriceItem.classList.contains('has-danger')) {
-      const adPriceItemError = adPriceItem.querySelector('.pristine-error');
-
-      adPriceItem.classList.remove('has-danger');
-      adPriceItemError.style.display = 'none';
-    }
-  }
-});
+const housingType = document.querySelector('#housing-type');
+const housingPrice = document.querySelector('#housing-price');
+const housingRooms = document.querySelector('#housing-rooms');
+const housingGuests = document.querySelector('#housing-guests');
+const housingFeatures = document.querySelectorAll('[name="features"]');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -113,15 +47,12 @@ const pristine = new Pristine(adForm, {
   errorTextClass: 'help'
 });
 
-
 const validatePrice = (value) => {
   const typeOption = type.querySelector('option:checked');
   const typeOptionName = typeOption.textContent;
   const typeOptionMinPrice = accommodationPrice[typeOptionName];
 
-  slider.noUiSlider.updateOptions({
-    start: value,
-  });
+  updateSliderValue(value);
 
   return value >= typeOptionMinPrice;
 };
@@ -208,43 +139,72 @@ const unblockSubmitButton = () => {
   submitFormButton.textContent = 'Опубликовать';
 };
 
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-
-  const isValid = pristine.validate();
-
-  if (isValid) {
-    blockSubmitButton();
-
-    sendData(
-      () => {
-        showSuccessNotice();
-        unblockSubmitButton();
-
-        adForm.reset();
-        map.closePopup();
-
-        slider.noUiSlider.updateOptions({
-          start: PRICE_RANGE_MIN,
-        });
-      },
-      () => {
-        showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
-        unblockSubmitButton();
-      },
-      new FormData(evt.target),
-    );
-  }
-});
-
-resetFormButton.addEventListener('click', () => {
-  slider.noUiSlider.updateOptions({
-    start: PRICE_RANGE_MIN,
+const redrawAdOnEvent = (cb) => {
+  housingType.addEventListener('change', () => {
+    cb();
   });
 
+  housingPrice.addEventListener('change', () => {
+    cb();
+  });
+
+  housingRooms.addEventListener('change', () => {
+    cb();
+  });
+
+  housingGuests.addEventListener('change', () => {
+    cb();
+  });
+
+  housingFeatures.forEach((item) => {
+    item.addEventListener('change', () => {
+      cb();
+    });
+  });
+
+  resetFormButton.addEventListener('click', () => {
+    mapForm.reset();
+
+    cb();
+  });
+
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+
+    if (isValid) {
+      blockSubmitButton();
+      mapForm.reset();
+      cb();
+
+      sendData(
+        () => {
+          showSuccessNotice();
+          unblockSubmitButton();
+          resetMap();
+          adForm.reset();
+          resetSliderValue();
+          resetPreviews();
+        },
+
+        () => {
+          showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
+          unblockSubmitButton();
+        },
+
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+resetFormButton.addEventListener('click', () => {
+  resetMap();
+  mapForm.reset();
+  resetSliderValue();
   price.placeholder = PRICE_RANGE_MIN;
-
-  map.closePopup();
-
-  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
+  resetPreviews();
 });
+
+export {redrawAdOnEvent};
