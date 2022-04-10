@@ -4,9 +4,6 @@ import {sendData} from './server.js';
 import {showSuccessNotice, showErrorNotice} from './server-notice.js';
 import {resetMap} from './create-map.js';
 
-validateSlider();
-validatePreviews();
-
 const accommodationPrice = {
   'Бунгало': 0,
   'Квартира': 1000,
@@ -39,6 +36,11 @@ const housingPrice = document.querySelector('#housing-price');
 const housingRooms = document.querySelector('#housing-rooms');
 const housingGuests = document.querySelector('#housing-guests');
 const housingFeatures = document.querySelectorAll('[name="features"]');
+
+validateSlider();
+validatePreviews();
+
+price.value = '';
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',

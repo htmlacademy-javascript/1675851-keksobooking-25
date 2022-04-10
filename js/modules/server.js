@@ -1,5 +1,9 @@
+const adressFrom = 'https://25.javascript.pages.academy/keksobooking/data';
+const adressTo = 'https://25.javascript.pages.academy/keksobooking';
+
 const getData = (onSuccess, onError) => {
-  fetch('https://25.javascript.pages.academy/keksobooking/data',
+  fetch(
+    adressFrom,
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -20,7 +24,7 @@ const getData = (onSuccess, onError) => {
 
 const sendData = (onSuccess, onError, body) => {
   fetch(
-    'https://25.javascript.pages.academy/keksobooking',
+    adressTo,
     {
       method: 'POST',
       body,
