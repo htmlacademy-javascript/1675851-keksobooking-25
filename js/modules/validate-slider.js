@@ -10,18 +10,15 @@ const validateSlider = () => {
       min: PRICE_RANGE_MIN,
       max: PRICE_RANGE_MAX,
     },
-    start: 0,
+    start: '',
     step: 1,
     connect: 'lower',
     format: {
-      to: function (value) {
-        return value.toFixed(0);
-      },
-      from: function (value) {
-        return Number(value);
-      },
+      to: (value) => value.toFixed(0),
+      from: (value) => Number(value)
     },
-  });
+  },
+  );
 
   slider.noUiSlider.on('update', () => {
     price.value = slider.noUiSlider.get();
@@ -47,6 +44,8 @@ const resetSliderValue = () => {
   slider.noUiSlider.updateOptions({
     start: PRICE_RANGE_MIN,
   });
+
+  price.value = '';
 };
 
 export {PRICE_RANGE_MIN, validateSlider, updateSliderValue, resetSliderValue};

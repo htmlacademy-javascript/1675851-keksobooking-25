@@ -64,15 +64,19 @@ const renderAd = (data) => {
     };
 
     createPhotos();
+
+    const hideDatalessItems = () => {
+      const adItemElements = adItem.children;
+
+      for (const adItemElement of adItemElements) {
+        if (!adItemElement.textContent && !adItemElement.classList.contains('popup__avatar')) {
+          adItemElement.classList.add('hidden');
+        }
+      }
+    };
+
+    hideDatalessItems();
   });
-
-  const adItemElements = adItem.children;
-
-  for (const adItemElement of adItemElements) {
-    if (!adItemElement.textContent && !adItemElement.classList.contains('popup__avatar')) {
-      adItemElement.classList.add('hidden');
-    }
-  }
 
   return adItem;
 };

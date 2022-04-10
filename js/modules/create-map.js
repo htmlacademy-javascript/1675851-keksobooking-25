@@ -19,6 +19,16 @@ const MINOR_PIN_SIZE = [
   40
 ];
 
+const MAIN_PIN_SHIFT = [
+  26,
+  52
+];
+
+const MINOR_PIN_SHIFT = [
+  20,
+  40
+];
+
 const address = document.querySelector('[name="address"]');
 const DIGITS_AMOUNT = 5;
 
@@ -41,13 +51,13 @@ L.tileLayer(
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
   iconSize: MAIN_PIN_SIZE,
-  iconAnchor: [26, 52],
+  iconAnchor: MAIN_PIN_SHIFT,
 });
 
 const minorPinIcon = L.icon({
   iconUrl: './img/pin.svg',
   iconSize: MINOR_PIN_SIZE,
-  iconAnchor: [20, 40],
+  iconAnchor: MINOR_PIN_SHIFT,
 });
 
 const mainMarker = L.marker(
