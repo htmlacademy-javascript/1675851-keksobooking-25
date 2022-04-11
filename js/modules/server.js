@@ -1,9 +1,9 @@
-const adressFrom = 'https://25.javascript.pages.academy/keksobooking/data';
-const adressTo = 'https://25.javascript.pages.academy/keksobooking';
+const ADDRESS_FROM = 'https://25.javascript.pages.academy/keksobooking/data';
+const ADDRESS_TO = 'https://25.javascript.pages.academy/keksobooking';
 
 const getData = (onSuccess, onError) => {
   fetch(
-    adressFrom,
+    ADDRESS_FROM,
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -12,9 +12,9 @@ const getData = (onSuccess, onError) => {
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        onError('Ошибка загрузки данных с сервера');
       }
+
+      return onError('Ошибка загрузки данных с сервера');
     })
     .then((data) => onSuccess(data))
     .catch(() => {
@@ -24,7 +24,7 @@ const getData = (onSuccess, onError) => {
 
 const sendData = (onSuccess, onError, body) => {
   fetch(
-    adressTo,
+    ADDRESS_TO,
     {
       method: 'POST',
       body,
@@ -34,7 +34,7 @@ const sendData = (onSuccess, onError, body) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onError('Не удалось отправить форму. Попробуйте еще раз');
+        return onError('Не удалось отправить форму. Попробуйте еще раз');
       }
     })
     .catch(() => {

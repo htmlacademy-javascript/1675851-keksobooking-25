@@ -1,6 +1,7 @@
-const slider = document.querySelector('.ad-form__slider');
 const PRICE_RANGE_MIN = 0;
 const PRICE_RANGE_MAX = 100000;
+
+const slider = document.querySelector('.ad-form__slider');
 const price = document.querySelector('[name="price"]');
 const adPriceItems = document.getElementsByClassName('ad-form__element--price');
 
