@@ -141,6 +141,35 @@ const unblockSubmitButton = () => {
   submitFormButton.textContent = 'Опубликовать';
 };
 
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+
+  if (isValid) {
+    blockSubmitButton();
+    mapForm.reset();
+
+    sendData(
+      () => {
+        showSuccessNotice();
+        unblockSubmitButton();
+        resetMap();
+        adForm.reset();
+        resetSliderValue();
+        resetPreviews();
+      },
+
+      () => {
+        showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
+        unblockSubmitButton();
+      },
+
+      new FormData(evt.target),
+    );
+  }
+});
+
 const redrawAdOnEvent = (cb) => {
   housingType.addEventListener('change', () => {
     cb();
@@ -176,27 +205,7 @@ const redrawAdOnEvent = (cb) => {
     const isValid = pristine.validate();
 
     if (isValid) {
-      blockSubmitButton();
-      mapForm.reset();
       cb();
-
-      sendData(
-        () => {
-          showSuccessNotice();
-          unblockSubmitButton();
-          resetMap();
-          adForm.reset();
-          resetSliderValue();
-          resetPreviews();
-        },
-
-        () => {
-          showErrorNotice('Не удалось отправить форму. Попробуйте еще раз');
-          unblockSubmitButton();
-        },
-
-        new FormData(evt.target),
-      );
     }
   });
 };

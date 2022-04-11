@@ -1,8 +1,6 @@
 import {setInactiveState, setActiveState} from './set-state.js';
 
-setInactiveState();
-
-const tokyoPoints = {
+const cityPoints = {
   latitude: 35.68211,
   longitude: 139.76567
 };
@@ -29,16 +27,19 @@ const MINOR_PIN_SHIFT = [
   40
 ];
 
-const address = document.querySelector('[name="address"]');
 const DIGITS_AMOUNT = 5;
+
+const address = document.querySelector('[name="address"]');
+
+setInactiveState();
 
 const map = L.map('map-canvas')
   .on('load', () => {
     setActiveState();
   })
   .setView({
-    lat: tokyoPoints.latitude,
-    lng: tokyoPoints.longitude,
+    lat: cityPoints.latitude,
+    lng: cityPoints.longitude,
   }, MAP_ZOOM);
 
 L.tileLayer(
@@ -62,8 +63,8 @@ const minorPinIcon = L.icon({
 
 const mainMarker = L.marker(
   {
-    lat: tokyoPoints.latitude,
-    lng: tokyoPoints.longitude,
+    lat: cityPoints.latitude,
+    lng: cityPoints.longitude,
   },
   {
     draggable: true,
@@ -80,9 +81,9 @@ mainMarker.on('move', (evt) => {
 });
 
 const resetMap = () => {
-  map.setView([tokyoPoints.latitude, tokyoPoints.longitude], MAP_ZOOM);
-  mainMarker.setLatLng([tokyoPoints.latitude, tokyoPoints.longitude]);
+  map.setView([cityPoints.latitude, cityPoints.longitude], MAP_ZOOM);
+  mainMarker.setLatLng([cityPoints.latitude, cityPoints.longitude]);
   map.closePopup();
 };
 
-export {tokyoPoints, map, minorPinIcon, mainMarker, resetMap};
+export {map, minorPinIcon, resetMap};
